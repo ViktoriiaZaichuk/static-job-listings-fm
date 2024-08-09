@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed , watch} from 'vue';
 import axios from 'axios';
 import JobCard from '@/components/JobCard.vue';
 
@@ -9,6 +9,10 @@ const state = reactive({
   isLoading: true,
   error: null,
 });
+
+// Define a ref to keep track of the selected filters
+const selectedFilters = ref([]);
+
 
 // Fetch jobs when the component is mounted
 onMounted(async () => {
@@ -23,15 +27,33 @@ onMounted(async () => {
     state.isLoading = false;
   }
 });
+
+// Update the selected filters when the child component emits an event
+function updateFilters(newFilter) {
+  if (!selectedFilters.value.includes(newFilter)) {
+    selectedFilters.value.push(newFilter);
+    console.log('Added Filter:', newFilter);
+    console.log('Selected Filters:', selectedFilters.value);
+  }
+}
+
+watch(selectedFilters, (newFilters) => {
+  console.log('Selected Filters changed:', newFilters);
+});
+
 </script>
 
 <template>
   <div class="flex flex-col">
     <header class="header flex justify-center items-center min-h-28 bg-primary">
       <div class="flex items-center justify-between mx-6 sm:mx-20 py-2 px-6 bg-white rounded-md w-full">
-        <div>
+        <!-- here -->
+        <div
+          v-for="filter in selectedFilters"
+          :key="filter"
+        >
           <button class="flex items-center p-1 overflow-hidden rounded-sm">
-            <span class="block bg-light-cyan-tablets text-primary font-bold pl-2 pr-4 py-1 rounded-l-sm">Front-end</span>
+            <span class="block bg-light-cyan-tablets text-primary font-bold pl-2 pr-4 py-1 rounded-l-sm">{{ filter }}</span>
             <span class="block h-full bg-primary hover:bg-dark-cyan-bg py-2 px-2 rounded-r-sm">
               <svg 
                 class="block"
@@ -56,6 +78,7 @@ onMounted(async () => {
           v-for="job in state.jobs"
           :key="job.id"
           :job="job"
+          @updateTablets="updateFilters"
         />
       </div>
     </main>

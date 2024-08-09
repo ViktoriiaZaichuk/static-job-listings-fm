@@ -1,9 +1,18 @@
 <script setup>
-import { defineProps } from 'vue';
+import { ref, defineProps, watch } from 'vue';
 
 const props = defineProps({
   job: Object,
 });
+
+// Emit an event to update the tablets filter
+const emit = defineEmits(['updateTablets']);
+
+// Function to emit the filter value to the parent
+function toggleTablet(filter) {
+  emit('updateTablets', filter);
+}
+
 </script>
 
 <template>
@@ -17,7 +26,7 @@ const props = defineProps({
                 >
             </div>
             <div class="sm:ml-6">
-                <div class="flex items-center">
+                <div class="flex items-center"> 
                     <h3 class="mr-4 text-primary font-bold text-lg">{{ job.company }}</h3>
                     <div>
                         <span 
@@ -44,12 +53,19 @@ const props = defineProps({
         </div>
 
         <div class="flex flex-wrap text-primary font-bold text-lg gap-x-3">
-            <h3 class="my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer">{{ job.role }}</h3>
-            <h3 class="my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer">{{ job.level }}</h3>
+            <h3 
+                class="my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                @click="toggleTablet(job.role)"
+            >{{ job.role }}</h3>
+            <h3 
+                class="my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                @click="toggleTablet(job.level)"
+            >{{ job.level }}</h3>
             <h3
                 class="flex my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer"
                 v-for="lang in job.languages"
                 :key="lang"
+                @click="toggleTablet(lang)"
             >
              {{ lang }}
             </h3>
@@ -57,6 +73,7 @@ const props = defineProps({
                 class="flex my-3 py-1 px-2 bg-light-cyan-tablets rounded-md hover:bg-primary hover:text-white cursor-pointer"
                 v-for="tool in job.tools"
                 :key="tool"
+                @click="toggleTablet(tool)"
             >
              {{ tool }}
             </h3>
