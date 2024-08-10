@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, watch } from 'vue';
+import { defineProps } from 'vue';
 
 const props = defineProps({
   job: Object,
